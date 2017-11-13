@@ -4,6 +4,37 @@
 
 Game::Game()
 {
+	t1.loadFromFile("images/spaceship.png");
+	t2.loadFromFile("images/background.jpg");
+	t3.loadFromFile("images/explosions/type_C.png");
+	t4.loadFromFile("images/rock.png");
+	t5.loadFromFile("images/fire_blue.png");
+	t6.loadFromFile("images/rock_small.png");
+	t7.loadFromFile("images/explosions/type_B.png");
+
+	t1.setSmooth(true);
+	t2.setSmooth(true);
+	background = sf::Sprite(t2);
+
+	sExplosion = Animation(t3, 0, 0, 256, 256, 48, 0.5);
+	sRock = Animation(t4, 0, 0, 64, 64, 16, 0.2);
+	sRock_small = Animation(t6, 0, 0, 64, 64, 16, 0.2);
+	sBullet = Animation(t5, 0, 0, 32, 64, 16, 0.8);
+	sPlayer = Animation(t1, 40, 0, 40, 40, 1, 0);
+	sPlayer_go = Animation(t1, 40, 40, 40, 40, 1, 0);
+	sExplosion_ship = Animation(t7, 0, 0, 192, 192, 64, 0.5);
+
+	for (int i = 0;i<15;i++)
+	{
+		asteroid *a = new asteroid();
+		a->settings(sRock, rand() % W, rand() % H, rand() % 360, 25);
+		entities.push_back(a);
+	}
+
+	p = new player();
+	p->settings(sPlayer, 200, 200, 0, 20);
+	entities.push_back(p);
+
 }
 
 
@@ -21,46 +52,14 @@ bool Game::isCollide(Entity *a, Entity *b)
 
 void Game::run_game() {
 	
+
 	srand(time(0));
+
 	sf::RenderWindow app(sf::VideoMode(W, H), "Asteroids!");
 	app.setFramerateLimit(60);
 
-	sf::Texture t1, t2, t3, t4, t5, t6, t7;
-	t1.loadFromFile("images/spaceship.png");
-	t2.loadFromFile("images/background.jpg");
-	t3.loadFromFile("images/explosions/type_C.png");
-	t4.loadFromFile("images/rock.png");
-	t5.loadFromFile("images/fire_blue.png");
-	t6.loadFromFile("images/rock_small.png");
-	t7.loadFromFile("images/explosions/type_B.png");
 
-	t1.setSmooth(true);
-	t2.setSmooth(true);
-
-	sf::Sprite background(t2);
-
-	Animation sExplosion(t3, 0, 0, 256, 256, 48, 0.5);
-	Animation sRock(t4, 0, 0, 64, 64, 16, 0.2);
-	Animation sRock_small(t6, 0, 0, 64, 64, 16, 0.2);
-	Animation sBullet(t5, 0, 0, 32, 64, 16, 0.8);
-	Animation sPlayer(t1, 40, 0, 40, 40, 1, 0);
-	Animation sPlayer_go(t1, 40, 40, 40, 40, 1, 0);
-	Animation sExplosion_ship(t7, 0, 0, 192, 192, 64, 0.5);
-
-
-	std::list<Entity*> entities;
-
-	for (int i = 0;i<15;i++)
-	{
-		asteroid *a = new asteroid();
-		a->settings(sRock, rand() % W, rand() % H, rand() % 360, 25);
-		entities.push_back(a);
-	}
-
-	player *p = new player();
-	p->settings(sPlayer, 200, 200, 0, 20);
-	entities.push_back(p);
-
+	
 	/////main loop/////
 	while (app.isOpen())
 	{

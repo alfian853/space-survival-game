@@ -1,7 +1,6 @@
 #pragma once
 #include "Animation.h"
 
-
 class Entity
 {
 public:
@@ -12,7 +11,7 @@ public:
 	bool life;
 	std::string name;
 	Animation anim;
-
+	//virtual void setImage();
 	Entity();
 	void settings(Animation &a, int X, int Y, float Angle = 0, int radius = 1);
 

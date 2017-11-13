@@ -8,6 +8,7 @@ asteroid::asteroid()
 	dx = rand() % 8 - 4;
 	dy = rand() % 8 - 4;
 	name = "asteroid";
+	
 
 }
 
