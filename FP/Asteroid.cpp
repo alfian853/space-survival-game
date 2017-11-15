@@ -8,10 +8,10 @@ asteroid::asteroid()
 	dx = rand() % 8 - 4;
 	dy = rand() % 8 - 4;
 	name = "asteroid";
-	
-
 }
-
+void asteroid::setName(std::string new_name) {
+	name = new_name;
+}
 void asteroid::update()
 {
 	x += dx;

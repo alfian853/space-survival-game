@@ -1,7 +1,6 @@
 #include "Animation.h"
 
-
-
+int W = 0, H = 0;
 Animation::Animation(){}
 
 Animation::Animation(sf::Texture &t, int x, int y, int w, int h, int count, float Speed)
@@ -28,6 +27,5 @@ void Animation::update()
 bool Animation::isEnd()
 {
 	return Frame + speed >= frames.size();
-
 }
 

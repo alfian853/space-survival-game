@@ -8,5 +8,5 @@ public:
 	sf::Texture asdj;
 	asteroid();
 	void  update();
-	
+	void setName(std::string new_name);
 };

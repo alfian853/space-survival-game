@@ -3,6 +3,7 @@
 class bullet : public Entity
 {
 public:
+	bool superMode;
 	bullet();
 	void update();
 };

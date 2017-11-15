@@ -6,6 +6,9 @@
 
 //using namespace sf;
 //using sf::Texture;
+extern int W;//width
+extern int H;//heigth
+
 class Animation{
 public:
 	float Frame, speed;
