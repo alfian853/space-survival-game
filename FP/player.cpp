@@ -8,9 +8,12 @@ player::player()
 	hp = 100;
 	superMode = false;
 }
-
+void player::set_angle(double angle) {
+	this->angle = angle;
+}
 void player::update()
 {
+
 	if (move_direction == 1) {
 		dx += cos(angle*DEGTORAD)*0.12;
 		dy += sin(angle*DEGTORAD)*0.12;

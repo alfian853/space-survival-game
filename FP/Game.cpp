@@ -1,7 +1,4 @@
 #include "Game.h"
-#include <math.h>
-#include <stdio.h>
-#include <thread>
 
 Game::Game()
 {
@@ -61,13 +58,19 @@ void Game::reset_game() {
 	skor = 0;
 	next_lvl_score = 400;
 	p = new player();
-	hpBoost_factor = 50000;
-	asteroid_factor = 150000;
+	hpBoost_factor = 150;
+	asteroid_factor = 15000;
 	sMode_factor = 200;
 	p->settings(sPlayer, W/2, H/2, 0, 20);
 	entities.clear();
 	entities.push_back(p);
-	before_t = current_t = 0.0;
+	before_t = current_t = std::chrono::high_resolution_clock::now();
+}
+
+double Game::compute_angle(double x1, double y1, double x2, double y2) {
+	if(x1<x2)return atan(  (y1-y2)/(x1-x2)  )*180/phi;
+	
+	return -180+atan((y1 - y2) / (x1 - x2)) * 180 / phi;
 }
 
 void Game::run_game() {
@@ -136,6 +139,17 @@ void Game::run_game() {
 
 			}
 			if (p->move_direction == 0)p->anim = sPlayer;
+			if (event.type == sf::Event::MouseMoved) {
+				double xx = sf::Mouse::getPosition().x;
+				double yy = sf::Mouse::getPosition().y;
+				double temp = compute_angle(p->get_possition().x+18, p->get_possition().y+18, xx, yy);
+				//temp *=(180/phi);
+				printf("%.2f %.2f %.2f %.2f set angle %f\n",
+					xx,yy,p->get_possition().x,p->get_possition().y,
+					temp);
+				p->set_angle( temp);
+
+			}
 		}//close input block
 
 		
@@ -202,7 +216,7 @@ void Game::run_game() {
 						printf("collide\n");
 						p->superMode = true;
 						b->life = false;
-						before_t = clock();
+						before_t = std::chrono::high_resolution_clock::now();
 						Entity *e = new Entity();
 						e->settings(sExplosion, b->x, b->y);
 						e->name = "explosion";
@@ -236,10 +250,11 @@ void Game::run_game() {
 
 
 		if (p->superMode) {
-			current_t = clock();
-			comp = (double)current_t - (double)before_t;
-			if ( comp > 4.999) {
+			current_t = std::chrono::high_resolution_clock::now();
+			comp = std::chrono::duration<double, std::milli>(current_t - before_t).count();
+			if ( comp > 4999) {
 				p->superMode = false;
+				printf("supermode off");
 			}
 		}
 
@@ -268,16 +283,20 @@ void Game::run_game() {
 		}
 
 
-
+		sprintf(rest_time, "%.2f", (5000 - comp) / 1000);
 		//////draw//////
-		score_text.setString(
-			"Score : " + std::to_string(skor) + "\nHp : " + std::to_string(p->hp)
-			+ "\n superMode : " + std::to_string(comp)
-			+ "\n t1: " + std::to_string(before_t)
-			+ "\n t2: " + std::to_string(current_t)
-		
-		);
-	//	player_hp.setString(std::to_string(p->hp));
+		if (p->superMode) {
+			score_text.setString(
+				"Score : " + std::to_string(skor) + "\nHp : " + std::to_string(p->hp)
+				+ "\nsuperMode : "+std::string(rest_time)
+			);
+		}
+		else {
+			score_text.setString(
+				"Score : " + std::to_string(skor) + "\nHp : " + std::to_string(p->hp)
+			);
+		}
+	
 		app.draw(background);
 
 		for (auto i : entities)i->draw(app);

@@ -16,6 +16,9 @@ void Entity::settings(Animation &a, int X, int Y, float Angle, int radius)
 
 void Entity::update() {};
 
+sf::Vector2f Entity::get_possition() {
+	return sf::Vector2f(x, y);
+}
 
 
 void Entity::draw(sf::RenderWindow &app)
