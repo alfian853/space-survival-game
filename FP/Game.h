@@ -18,7 +18,7 @@ class Game
 {
 private:
 	const double phi = 3.141592654f;
-	sf::Texture t1, t2, t3, t4, t5, t6, t7,t8,t9;
+	sf::Texture t1, t2, t3, t4, t5, t6, t7,t8,t9,t10;
 	sf::Sprite background;
 	Animation sExplosion;
 	Animation sRock;
@@ -31,6 +31,9 @@ private:
 	Animation sExplosion_ship;
 	Animation hpBoost;
 	Animation sModeBoost;
+	Animation sGunUpgrade;
+	Animation sResisted;
+
 	player *p;
 	std::list<Entity*> entities;
 	char rest_time[256];
@@ -40,6 +43,7 @@ private:
 	int asteroid_factor;
 	int hpBoost_factor;
 	int sMode_factor;
+	bool spaceKeyPressed;
 	std::chrono::high_resolution_clock::time_point before_t,current_t;
 	double compute_angle(double x1,double y1,double x2,double y2);
 	void reset_game();
@@ -50,3 +54,19 @@ public:
 	bool isCollide(Entity *a, Entity *b);
 	~Game();
 };
+
+/*
+player{
+asteroid
+hpboost
+smode
+}
+
+bullet{
+asteroid
+hpboost
+smode
+}
+
+
+*/

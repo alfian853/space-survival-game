@@ -13,7 +13,6 @@ public:
 	4 move right
 	*/
 	int move_direction;
-	int hp;
 	bool superMode;
 	player();
 	void update();

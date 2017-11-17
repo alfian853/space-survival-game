@@ -3,9 +3,9 @@
 
 Entity::Entity()
 {
-	life = 1;
+	hp = 20;
 }
-
+void Entity::setHp(int hp) { this->hp = hp; }
 void Entity::settings(Animation &a, int X, int Y, float Angle, int radius)
 {
 	anim = a;
@@ -23,6 +23,7 @@ sf::Vector2f Entity::get_possition() {
 
 void Entity::draw(sf::RenderWindow &app)
 {
+
 	anim.sprite.setPosition(x, y);
 	anim.sprite.setRotation(angle + 90);
 	app.draw(anim.sprite);

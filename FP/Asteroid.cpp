@@ -5,9 +5,12 @@
 asteroid::asteroid()
 {
 	//asteroid movement
-	dx = rand() % 8 - 4;
-	dy = rand() % 8 - 4;
+	do {
+		dx = rand() % 8 - 4;
+		dy = rand() % 8 - 4;
+	} while (dx == 0 || dy == 0);
 	name = "asteroid";
+	hp = 40;
 }
 void asteroid::setName(std::string new_name) {
 	name = new_name;

@@ -4,13 +4,13 @@ bullet::bullet()
 {
 	name = "bullet";
 	superMode = false;
+	hp = 20;
 }
 
 void  bullet::update()
 {
 	dx = cos(angle*DEGTORAD) * 20;
 	dy = sin(angle*DEGTORAD) * 20;
-	// angle+=rand()%6-3;
 	x += dx;
 	y += dy;
 
@@ -20,6 +20,5 @@ void  bullet::update()
 		if (y > H) y = 0;
 		if (y < 0) y = H;
 	}
-	else if (x>W || x<0 || y>H || y<0) life = 0;
-
+	else if (x>W || x<0 || y>H || y<0) hp = -1;
 }

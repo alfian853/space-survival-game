@@ -15,7 +15,6 @@ Game::Game()
 	t8.loadFromFile("images/hpBoost.png");
 	t9.loadFromFile("images/car.png");
 
-
 	t1.setSmooth(true);
 	t2.setSmooth(true);
 	background = sf::Sprite(t2);
@@ -31,14 +30,7 @@ Game::Game()
 	sExplosion_ship  = Animation(t7, 0, 0, 192, 192, 64, 0.5);
 	hpBoost          = Animation(t8, 0, 0,49,42,1,0 );
 	sModeBoost		 = Animation(t9, 0, 0, 43, 45, 1, 0);
-	/*for (int i = 0;i<15;i++)
-	{
-		asteroid *a = new asteroid();
-		a->settings(sRock, rand() % W, rand() % H, rand() % 360, 25);
-		entities.push_back(a);
-	}*/
-
-	
+	sResisted		 = Animation(t3, 256*35,0 , 256, 256,13,0.5);
 }
 
 
@@ -58,10 +50,10 @@ void Game::reset_game() {
 	skor = 0;
 	next_lvl_score = 400;
 	p = new player();
-	hpBoost_factor = 150;
-	asteroid_factor = 15000;
-	sMode_factor = 200;
-	p->settings(sPlayer, W/2, H/2, 0, 20);
+	hpBoost_factor = 1000;
+	asteroid_factor = 150;
+	sMode_factor = 5000;
+	p->settings(sPlayer, W/2, H/2, 0, 16);
 	entities.clear();
 	entities.push_back(p);
 	before_t = current_t = std::chrono::high_resolution_clock::now();
@@ -93,7 +85,7 @@ void Game::run_game() {
 	sf::RenderWindow app(sf::VideoMode(W, H), "Asteroids!");
 	app.setFramerateLimit(60);
 
-	bool spaceKeyPressed = false;
+	spaceKeyPressed = false;
 
 	/////main loop/////
 	while (app.isOpen())
@@ -110,15 +102,29 @@ void Game::run_game() {
 					bullet *b = new bullet();
 					b->settings(sBullet, p->x, p->y, p->angle, 10);
 					entities.push_back(b);
+
+					b = new bullet();
+					b->settings(sBullet, p->x, p->y, p->angle+20, 10);
+					entities.push_back(b);
+
+					b = new bullet();
+					b->settings(sBullet, p->x, p->y, p->angle-20, 10);
+					entities.push_back(b);
+
 					spaceKeyPressed = true;
 				}
-				if (event.key.code == sf::Keyboard::Right) {
-					if (abs(p->dx) > 1.5 || abs(p->dy) > 1.5) p->anim = sPlayer_go_right;
-					p->angle +=10;
+				if (event.key.code == sf::Keyboard::Right|| event.key.code == sf::Keyboard::D) {
+//					if (abs(p->dx) > 1.5 || abs(p->dy) > 1.5) p->anim = sPlayer_go_right;
+					p->anim = sPlayer_go_right;
+					p->move_direction = 3;
+	//				p->angle +=10;
+					
 				}
-				if (event.key.code == sf::Keyboard::Left) {
-					if (abs(p->dx) > 1.5 || abs(p->dy) > 1.5) p->anim = sPlayer_go_left;
-					p->angle -= 10;
+				if (event.key.code == sf::Keyboard::Left || event.key.code == sf::Keyboard::A) {
+	//				if (abs(p->dx) > 1.5 || abs(p->dy) > 1.5) p->anim = sPlayer_go_left;
+					p->anim = sPlayer_go_left;
+					p->move_direction = 4;
+//					p->angle -= 10;
 				}
 				if (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::W) {
 					p->anim = sPlayer_go;
@@ -130,11 +136,18 @@ void Game::run_game() {
 				}
 			}
 			if (event.type == sf::Event::KeyReleased) {
+				printf("masuk\n");
 				if (event.key.code == sf::Keyboard::Space)spaceKeyPressed = false;
 				if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up
-					|| event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down					
+					|| event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down
+					|| event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left
+					|| event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right
+
 					) {
 					p->move_direction = 0;p->anim = sPlayer; //printf("masuk\n");
+				}
+				if (event.key.code == sf::Mouse::Left) {
+					spaceKeyPressed = false;
 				}
 
 			}
@@ -143,90 +156,147 @@ void Game::run_game() {
 				double xx = sf::Mouse::getPosition().x;
 				double yy = sf::Mouse::getPosition().y;
 				double temp = compute_angle(p->get_possition().x+18, p->get_possition().y+18, xx, yy);
-				//temp *=(180/phi);
-				printf("%.2f %.2f %.2f %.2f set angle %f\n",
+				/*printf("%.2f %.2f %.2f %.2f set angle %f\n",
 					xx,yy,p->get_possition().x,p->get_possition().y,
-					temp);
+					temp);*/
 				p->set_angle( temp);
+			}
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left ) && !spaceKeyPressed) {
+				bullet *b = new bullet();
+				b->settings(sBullet, p->x, p->y, p->angle, 10);
+				entities.push_back(b);
 
+				b = new bullet();
+				b->settings(sBullet, p->x, p->y, p->angle + 20, 10);
+				entities.push_back(b);
+
+				b = new bullet();
+				b->settings(sBullet, p->x, p->y, p->angle - 20, 10);
+				entities.push_back(b);
+				spaceKeyPressed = true;
+			}
+			else if(!sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+				spaceKeyPressed = false;
 			}
 		}//close input block
 
 		
 
-		for (auto a : entities)
+		for (auto a : entities) {
+			bool breakga = false;
 			for (auto b : entities)
 			{
 				if (a->name == "asteroid" && b->name == "bullet") {
+					if (a->hp < 1 || b->hp < 1)continue;
 					if (isCollide(a, b))
 					{
-						a->life = false;
-						b->life = false;
+						int temp = a->hp;
+						a->hp -= b->hp;
+						b->hp -= temp;
+						Entity *e;
+						e = new Entity();
+						if (a->hp < 1) {
+							e->settings(sExplosion, a->x, a->y);
+							e->name = "explosion";
 
-						Entity *e = new Entity();
-						e->settings(sExplosion, a->x, a->y);
-						e->name = "explosion";
+						}
+						else {
+							e->settings(sResisted, a->x, a->y);
+							e->name = "explosion";
+						}
 						entities.push_back(e);
 						if (a->R == 15)skor += 10;
 						else skor += 20;
 
-						for (int i = 0;i < 2;i++)
-						{
-							if (a->R == 15) continue;
-							Entity *e = new asteroid();
-							e->settings(sRock_small, a->x, a->y, rand() % 360, 15);
-							entities.push_back(e);
+						if (a->R > 15 && a->hp < 1) {
+							for (int i = 0;i < 2;i++)
+							{
+								e = new asteroid();
+								e->setHp(20);
+								e->settings(sRock_small, a->x, a->y, rand() % 360, 15);
+								entities.push_back(e);
+							}
 						}
 
 					}
 				}
-
-				if (a->name == "player" && b->name == "asteroid") {
+				else if (a->name == "player" && b->name == "asteroid") {
+					if (a->hp < 1 || b->hp < 1)continue;
 					if (isCollide(a, b))
 					{
 						player *pl = (player*)a;
-						if (b->R == 15)pl->hp -= (rand() % 8 + 15), skor += 10;
-						else pl->hp -= (rand() % 8 + 32), skor += 20;
 
-
-						b->life = false;
-						Entity *e = new Entity();
-						e->settings(sExplosion_ship, a->x, a->y);
-						e->name = "explosion";
-						entities.push_back(e);
-
-						if (pl->hp < 1) { p->settings(sPlayer, W / 2, H / 2, 0, 20); pl->hp = 100; skor = 0; }
+						int temp = a->hp;
+						a->hp -= b->hp;
+						b->hp -= temp;
+						
+						printf("%d %d %d\n", a->hp, b->hp,temp);
+						if (b->hp < 1 || a->hp < 1) {
+							if (b->R == 15)skor += 10;
+							else {
+								skor += 20;
+								for (int i = 0;i < 2;i++)
+								{
+									asteroid *e = new asteroid();
+									e->settings(sRock_small, a->x, a->y, rand() % 360, 15);
+									entities.push_back(e);
+								}
+							}
+							Entity *e;
+							e = new Entity();
+							e->settings(sExplosion_ship, a->x, a->y);
+							e->name = "explosion";
+							entities.push_back(e);
+						}
+						if (pl->hp < 1) { p->settings(sPlayer, W / 2, H / 2, 0, 20);reset_game();breakga = true;break; }
 						p->dx = 0; p->dy = 0;
-
 					}
 				}
-				if ((a->name == "bullet" || a->name == "player") && b->name == "hpBoost") {
+				else if ((a->name == "bullet" || a->name == "player") && b->name == "hpBoost") {
+					if (a->hp < 1 || b->hp < 1)continue;
 					if (isCollide(a, b)) {
-						p->hp += 100;
-						b->life = false;
-						Entity *e = new Entity();
-						e->settings(sExplosion, b->x, b->y);
+						int temp = b->hp;
+						b->hp -= a->hp;
+						a->hp -= temp;
+						Entity *e;
+						e = new Entity();
 						e->name = "explosion";
+						if (b->hp < 1) {
+							p->hp += 100;
+							e->settings(sExplosion, b->x, b->y);
+						}
+						else {
+							e->settings(sResisted, b->x, b->y);
+						}
 						entities.push_back(e);
 					}
 				}
-	
-				if ((a->name == "bullet" || a->name == "player") && b->name == "sMode"){
+				else if ((a->name == "bullet" || a->name == "player") && b->name == "sMode") {
+					if (a->hp < 1 || b->hp < 1)continue;
 					if (isCollide(a, b)) {
-						printf("collide\n");
-						p->superMode = true;
-						b->life = false;
-						before_t = std::chrono::high_resolution_clock::now();
-						Entity *e = new Entity();
-						e->settings(sExplosion, b->x, b->y);
+						int temp = b->hp;
+						b->hp -= a->hp;
+						a->hp -= temp;
+						Entity *e;
+						e = new Entity();
 						e->name = "explosion";
+						if (b->hp < 1) {
+							p->superMode = true;
+							e->settings(sExplosion, b->x, b->y);
+						}
+						else {
+							e->settings(sResisted, b->x, b->y);
+						}
+						before_t = std::chrono::high_resolution_clock::now();
 						entities.push_back(e);
 					}
 
 				}//collide activity
 			}
+			if (breakga)break;
+		}
 
-
+		if (asteroid_factor <= 0)asteroid_factor = 50;
 		if (rand() % asteroid_factor == 0)
 		{
 			asteroid *a = new asteroid();
@@ -238,6 +308,7 @@ void Game::run_game() {
 			asteroid *a = new asteroid();
 			a->settings(hpBoost, 0, rand() % H, rand() % 360, 25);
 			a->name = "hpBoost";
+			a->setHp(100);
 			entities.push_back(a);
 		}
 		if (rand() % sMode_factor == 0)
@@ -245,6 +316,7 @@ void Game::run_game() {
 			asteroid *a = new asteroid();
 			a->settings(sModeBoost, 0, rand() % H, rand() % 360, 25);
 			a->name = "sMode";
+			a->setHp(100);
 			entities.push_back(a);
 		}
 
@@ -254,7 +326,7 @@ void Game::run_game() {
 			comp = std::chrono::duration<double, std::milli>(current_t - before_t).count();
 			if ( comp > 4999) {
 				p->superMode = false;
-				printf("supermode off");
+				//printf("supermode off");
 			}
 		}
 
@@ -278,7 +350,7 @@ void Game::run_game() {
 			e->update();
 			e->anim.update();
 
-			if (e->life == false) { i = entities.erase(i); delete e; }
+			if ( e->hp<1 ) { i = entities.erase(i); delete e; }
 			else i++;
 		}
 
@@ -302,7 +374,7 @@ void Game::run_game() {
 		for (auto i : entities)i->draw(app);
 
 		app.draw(score_text);
-
+		p->draw(app);
 		app.display();
 
 		if (skor >= next_lvl_score)asteroid_factor -= 10,next_lvl_score *= next_lvl_factor;

@@ -23,15 +23,17 @@ void player::update()
 		dy -= sin(angle*DEGTORAD)*0.12;
 	}
 	else if (move_direction == 3) {
-
+		dx -= sin(angle*DEGTORAD)*0.12;
+		dy += cos(angle*DEGTORAD)*0.12;;
 	}
 	else if (move_direction == 4) {
-
+		dx += sin(angle*DEGTORAD)*0.12;
+		dy -= cos(angle*DEGTORAD)*0.12;;
 	}
 	else
 	{
-		dx *= 0.83;
-		dy *= 0.83;
+		dx *= 0.81;
+		dy *= 0.81;
 	}
 	int maxSpeed = 10;
 	float speed = sqrt(dx*dx + dy*dy);
