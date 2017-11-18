@@ -15,6 +15,7 @@ Game::Game()
 	t8.loadFromFile("images/hpBoost.png");
 	t9.loadFromFile("images/car.png");
 	t10.loadFromFile("images/wave.png");
+	t11.loadFromFile("images/fire_red.png");
 	
 	if (!backSoundBuffer.loadFromFile("sound/Dark-Techno-City_Looping.ogg")) {
 		printf("errorcuk\n");
@@ -46,6 +47,7 @@ Game::Game()
 	sModeBoost		 = Animation(t9, 0, 0, 43, 45, 1, 0);
 	sResisted		 = Animation(t3, 256*35,0 , 256, 256,13,0.5);
 	sWave			 = Animation(t10, 0, 0, 124, 124, 1, 0);
+	sMegaBullet		 = Animation(t11, 0, 0, 32, 64, 16, 0.8);
 
 
 
@@ -184,19 +186,12 @@ void Game::run_game() {
 					p->set_angle(temp);
 				}
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !spaceKeyPressed) {
+					spaceKeyPressed = true;
 					shotSound.play();
 					bullet *b = new bullet();
-					b->settings(sBullet, p->x, p->y, p->angle, 10);
+					b->settings(sMegaBullet, p->x, p->y, p->angle, 10);
+					b->hp = 80;
 					entities.push_back(b);
-
-					b = new bullet();
-					b->settings(sBullet, p->x, p->y, p->angle + 20, 10);
-					entities.push_back(b);
-
-					b = new bullet();
-					b->settings(sBullet, p->x, p->y, p->angle - 20, 10);
-					entities.push_back(b);
-					spaceKeyPressed = true;
 				}
 				if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button==sf::Mouse::Left) {
 					spaceKeyPressed = false;
