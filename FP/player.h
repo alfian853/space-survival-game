@@ -15,7 +15,7 @@ public:
 	int move_direction;
 	bool superMode;
 	player();
-	void update();
+	void update()override;
 	void set_angle(double angle);
 	void set_move_direction(int mv_mode);
 	void set_hp(int x);

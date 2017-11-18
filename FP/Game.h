@@ -5,6 +5,7 @@
 #include "bullet.h"
 #include "Entity.h"
 #include "player.h"
+#include "TimeBomb.h"
 #include <math.h>
 #include <stdio.h>
 #include <iostream>
@@ -13,6 +14,8 @@
 #include <iomanip>
 #include <ratio>
 #include <string.h>
+#include <stdexcept>
+#include <SFML\Audio.hpp>
 
 class Game
 {
@@ -33,8 +36,17 @@ private:
 	Animation sModeBoost;
 	Animation sGunUpgrade;
 	Animation sResisted;
-
+	Animation sWave;
 	player *p;
+
+	sf::SoundBuffer backSoundBuffer;
+	sf::SoundBuffer shotSoundBuffer;
+
+	sf::Sound backSound;
+	sf::Sound shotSound;
+
+
+
 	std::list<Entity*> entities;
 	char rest_time[256];
 	int skor;
@@ -43,6 +55,8 @@ private:
 	int asteroid_factor;
 	int hpBoost_factor;
 	int sMode_factor;
+	int timeBomb_factor;
+
 	bool spaceKeyPressed;
 	std::chrono::high_resolution_clock::time_point before_t,current_t;
 	double compute_angle(double x1,double y1,double x2,double y2);
