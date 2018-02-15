@@ -1,10 +1,13 @@
 #pragma once
 #include "Animation.h"
 
+enum EnType {ENTITY,SHIP, BULLET, ASTEROID, TIME_BOMB, HP_BOOST, SHOT_BOOST, COLLIDE_EFFECT};
 class Entity {
-
+protected:
+	void setType(int x);
+private:
+	int enType;//karna enum tidak bisa static
 public:
-	float DEGTORAD = 0.017453f;
 	float x, y, dx, dy, R, angle;
 	int hp;
 	std::string name;
@@ -16,5 +19,6 @@ public:
 	virtual void update();
 	sf::Vector2f get_possition();
 	void draw(sf::RenderWindow &app);
-
+	int getType();
+	void colliding(Entity &enObj);
 };

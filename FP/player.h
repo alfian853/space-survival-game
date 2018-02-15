@@ -1,8 +1,11 @@
 #pragma once
 #include "Entity.h"
+#include "gameUtil.h"
 class player : public Entity
 {
 private:
+	static Animation *ship_idle,*ship_go,*ship_go_left,*ship_go_right;
+	static sf::Texture *t1,*t2,*t3,*t4;
 public:
 //	bool thrust;
 	/*
@@ -14,9 +17,8 @@ public:
 	*/
 	int move_direction;
 	bool superMode;
+	sf::Vector2f cartesian_speed;
 	player();
 	void update()override;
 	void set_angle(double angle);
-	void set_move_direction(int mv_mode);
-	void set_hp(int x);
 };

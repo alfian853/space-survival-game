@@ -43,8 +43,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\SFML-2.4.2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\SFML-2.4.2\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft Visual Studio\SFML-2.4.2\include;C:\SFML-2.4.2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft Visual Studio\SFML-2.4.2\lib;C:\SFML-2.4.2\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\SFML-2.4.2\include;$(IncludePath)</IncludePath>
@@ -81,10 +81,13 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Asteroid.cpp" />
     <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="CollideEffect.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GlobalValue.cpp" />
+    <ClCompile Include="gameUtil.cpp" />
+    <ClCompile Include="HpBoost.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="ShotBoost.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="TimeBomb.cpp" />
   </ItemGroup>
@@ -92,10 +95,13 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Asteroid.h" />
     <ClInclude Include="bullet.h" />
+    <ClInclude Include="CollideEffect.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="GlobalValue.h" />
+    <ClInclude Include="gameUtil.h" />
+    <ClInclude Include="HpBoost.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="ShotBoost.h" />
     <ClInclude Include="TimeBomb.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
