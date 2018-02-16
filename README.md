@@ -10,7 +10,9 @@ Developed using Visual Studio
 ## Gameplay
 ![alt text](/game_play_screenshot.jpg "gameplay_screenshot")
 
-Default Control:
+#### Default Control:
 W,A,S,D = moving(Front,left,back,right)
+
 Space or right click = shot with 3 bullet
+
 Left click = shot with 1 strong damage bullet
