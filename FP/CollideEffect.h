@@ -1,16 +1,20 @@
 #pragma once
 #include "Entity.h"
+#include <vector>
 #include <SFML\Audio.hpp>
-enum CEffType {ROCK_EXLODE,METAL_EXPLODE,BOMB_EXPLODE,RESIST};
+#include <SFML\OpenGL.hpp>
+
+enum CEffType {ROCK_EXPLODE,METAL_EXPLODE,BOMB_EXPLODE,RESIST,C_COUNT=4};
 
 class CollideEffect :
 	public Entity
 {
 private:
-	static sf::Texture *t1, *t2, *t3;
-	static Animation *rock_explode_anim, *metal_explode_anim, *bomb_explode_anim, *resist_anim;
-	static sf::SoundBuffer *explotionSoundBuffer,*bombSoundBuffer,*asteroidSoundBuffer,*resistSoundBuffer;
-	static sf::Sound *explotionSound,*bombSound,*asteroidSound,*resistSound;
+	static std::vector<sf::Texture>txture;
+	static std::vector<Animation>vecAnim;
+	static std::vector<sf::SoundBuffer> vecSoundBuffer;
+	static std::vector<sf::Sound> vecSound;
+
 	CEffType cEffType;
 public:
 	CollideEffect(CEffType opt,float pos_x,float pos_y);

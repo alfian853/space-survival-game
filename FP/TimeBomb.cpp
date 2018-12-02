@@ -6,13 +6,6 @@ sf::Texture *TimeBomb::t1;
 
 TimeBomb::TimeBomb()
 {
-	//asteroid movement
-	do {
-		dx = rand() % 8 - 4;
-		dy = rand() % 8 - 4;
-	} while (dx == 0 || dy == 0);
-
-
 	life_time = std::chrono::high_resolution_clock::now();
 	static bool first_call = true;
 	if (first_call){
@@ -23,12 +16,17 @@ TimeBomb::TimeBomb()
 		bomb_anim =new Animation(*t1, 0, 0, 48, 49, 3, 0.1);
 		first_call = false;
 	}
-
 	setType(EnType::TIME_BOMB);
-	this->settings(*bomb_anim, 0, rand() % H, rand() % 360, 25);
-	hp = 100;
+	sf::Vector2i randSpawn = GameUtil::getRandomSpawn(W,H);
 
-	
+	this->settings(*bomb_anim, randSpawn.x, randSpawn.y, rand() % 360, 25);
+	this->setAutoRotation(3);
+	this->setHp(300);
+
+	sf::Vector2f cartesian_speed = GameUtil::get_movement(5, angle);
+	dx = cartesian_speed.x;
+	dy = cartesian_speed.y;
+
 
 
 }

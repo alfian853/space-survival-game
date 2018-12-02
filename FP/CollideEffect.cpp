@@ -1,24 +1,9 @@
 #include "CollideEffect.h"
 
-sf::Texture *CollideEffect::t1, *CollideEffect::t2, *CollideEffect::t3;
-Animation *CollideEffect::rock_explode_anim, 
-		  *CollideEffect::metal_explode_anim,
-		  *CollideEffect::bomb_explode_anim,
-		  *CollideEffect::resist_anim
-;
-
-sf::SoundBuffer *CollideEffect::explotionSoundBuffer, 
-				*CollideEffect::bombSoundBuffer,
-			    *CollideEffect::asteroidSoundBuffer,
-				*CollideEffect::resistSoundBuffer
-;
-
-sf::Sound *CollideEffect::explotionSound,
-		  *CollideEffect::bombSound,
-	      *CollideEffect::asteroidSound,
-		  *CollideEffect::resistSound
-;
-
+std::vector<sf::Texture> CollideEffect::txture;
+std::vector<Animation> CollideEffect::vecAnim;
+std::vector<sf::SoundBuffer> CollideEffect::vecSoundBuffer;
+std::vector<sf::Sound> CollideEffect::vecSound;
 
 
 CollideEffect::CollideEffect(CEffType opt,float pos_x,float pos_y)
@@ -27,97 +12,41 @@ CollideEffect::CollideEffect(CEffType opt,float pos_x,float pos_y)
 	
 	if (first_call) {
 		first_call = false;
-		setHp(0);
-		t1 = new sf::Texture();
-		if (!t1->loadFromFile("images/explosions/type_C.png")) {
-			printf("load file failed\n");
-		}
-		rock_explode_anim = new Animation(*t1, 0, 0, 256, 256, 48, 0.5);
-		resist_anim       = new Animation(*t1, 256 * 35, 0, 256, 256, 13, 0.5);
+		setHp(12);
+		txture.resize(CEffType::C_COUNT);
+		vecAnim.resize(CEffType::C_COUNT);
 
-		t2 = new sf::Texture();
-		if (!t2->loadFromFile("images/explosions/type_B.png")) {
-			printf("load file failed\n");
-		}
-		metal_explode_anim = new Animation(*t2, 0, 0, 192, 192, 64, 0.5);
+		txture[CEffType::ROCK_EXPLODE].loadFromFile("images/explosions/type_C.png");
+		txture[CEffType::METAL_EXPLODE].loadFromFile("images/explosions/type_B.png");
+		txture[CEffType::BOMB_EXPLODE].loadFromFile("images/explosions/type_A.png");
 
-		t3 = new sf::Texture();
-		if (!t3->loadFromFile("images/explosions/type_A.png")) {
-			printf("load file failed\n");
-		}
-		bomb_explode_anim = new Animation(*t3, 0, 0, 400, 400, 20, 0.5);
+		vecAnim[CEffType::ROCK_EXPLODE] = Animation(txture[CEffType::ROCK_EXPLODE], 0, 0, 256, 256, 48, 0.5);
+		vecAnim[CEffType::RESIST] = Animation(txture[CEffType::ROCK_EXPLODE], 256 * 35, 0, 256, 256, 13, 0.5);
+		vecAnim[CEffType::METAL_EXPLODE] = Animation(txture[CEffType::METAL_EXPLODE], 0, 0, 192, 192, 64, 0.5);
+		vecAnim[CEffType::BOMB_EXPLODE]= Animation(txture[CEffType::BOMB_EXPLODE], 0, 0, 400, 400, 20, 0.5);
 
-		asteroidSoundBuffer = new sf::SoundBuffer();
-		if (!asteroidSoundBuffer->loadFromFile("sound/explosion_asteroid.ogg")) {
+		vecSoundBuffer.resize(CEffType::C_COUNT);
+		vecSound.resize(CEffType::C_COUNT);
 
-		}
-		explotionSoundBuffer = new sf::SoundBuffer();
-		if (!explotionSoundBuffer->loadFromFile("sound/explosion_metal.ogg")) {
-			printf("load file failed\n");
-		}
-		bombSoundBuffer = new sf::SoundBuffer();
-		if (!bombSoundBuffer->loadFromFile("sound/explosion_timeBomb.ogg")) {
-			printf("load file failed\n");
-		}
-		resistSoundBuffer = new sf::SoundBuffer();
-		if (!bombSoundBuffer->loadFromFile("sound/explosion_resist.ogg")) {
-			printf("load file failed\n");
-		}
-		asteroidSound = new sf::Sound();
-		asteroidSound->setBuffer(*asteroidSoundBuffer);
-		explotionSound = new sf::Sound();
-		explotionSound->setBuffer(*explotionSoundBuffer);
-		bombSound = new sf::Sound();
-		bombSound->setBuffer(*bombSoundBuffer);
-		resistSound = new sf::Sound();
-		resistSound->setBuffer(*resistSoundBuffer);
+		vecSoundBuffer[CEffType::ROCK_EXPLODE].loadFromFile("sound/explosion_asteroid.ogg");
+		vecSoundBuffer[CEffType::RESIST].loadFromFile("sound/explosion_resist.ogg");
+		vecSoundBuffer[CEffType::METAL_EXPLODE].loadFromFile("sound/explosion_metal.ogg");
+		vecSoundBuffer[CEffType::BOMB_EXPLODE].loadFromFile("sound/explosion_timeBomb.ogg");
 
-
+		vecSound[CEffType::ROCK_EXPLODE].setBuffer(vecSoundBuffer[CEffType::ROCK_EXPLODE]);
+		vecSound[CEffType::RESIST].setBuffer(vecSoundBuffer[CEffType::RESIST]);
+		vecSound[CEffType::METAL_EXPLODE].setBuffer(vecSoundBuffer[CEffType::METAL_EXPLODE]);
+		vecSound[CEffType::BOMB_EXPLODE].setBuffer(vecSoundBuffer[CEffType::BOMB_EXPLODE]);
 
 	}
 	setType(EnType::COLLIDE_EFFECT);
 	cEffType = opt;
 
-	switch (opt)
-	{
-	case ROCK_EXLODE:
-		settings(*rock_explode_anim, pos_x, pos_y);
-		break;
-	case METAL_EXPLODE:
-		settings(*metal_explode_anim, pos_x, pos_y);
-		break;
-	case BOMB_EXPLODE:
-		settings(*bomb_explode_anim, pos_x, pos_y);
-		setHp(150);
-		this->R = 150;
-		break;
-	case RESIST:
-		settings(*resist_anim, pos_x, pos_y);
-		break;
-	default:
-		break;
-	}
+	this->settings(vecAnim[opt], pos_x, pos_y,0,150);
 }
 
 void CollideEffect::playSound() {
-	switch (cEffType)
-	{
-	case ROCK_EXLODE:
-		asteroidSound->play();
-		break;
-	case METAL_EXPLODE:
-		explotionSound->play();
-		break;
-	case BOMB_EXPLODE:
-		bombSound->play();
-		break;
-	case RESIST:
-		resistSound->play();
-		break;
-	default:
-		break;
-	}
-
+	vecSound[cEffType].play();
 }
 
 int CollideEffect::get_CEffType() {

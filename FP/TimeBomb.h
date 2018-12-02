@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include "GameUtil.h"
 #include <chrono>
 class TimeBomb :
 	public Entity

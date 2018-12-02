@@ -2,13 +2,14 @@
 
 #include "Animation.h"
 #include "Asteroid.h"
-#include "bullet.h"
+#include "Bullet.h"
 #include "Entity.h"
-#include "player.h"
+#include "Ship.h"
 #include "TimeBomb.h"
-#include "HpBoost.h"
-#include "ShotBoost.h"
+#include "Debuff.h"
+#include "Buff.h"
 #include "CollideEffect.h"
+#include "UFO.h"
 #include <math.h>
 #include <stdio.h>
 #include <iostream>
@@ -24,30 +25,39 @@
 #include <SFML\Audio.hpp>
 #include <SFML\OpenGL.hpp>
 #include <utility>
+
 typedef std::pair<int, std::string> pis;
+
 class Game
 {
 private:
-	const double phi = 3.141592654f;
-	sf::Texture t1, t2, t3, t4, t5,t6;
+	sf::Texture t1, t2, t3, t4, t5,t6,t7,t8;
 	sf::Sprite background;
 	sf::Sprite gameOverTxtSprite;
 	sf::Sprite gameName;
+	sf::Sprite helpTable;
 	sf::Sprite scoreBoard;
-	
+	sf::SoundBuffer gameOverBuffer;
+	sf::Sound gameOverSound;
 
 	//global temp variable
-	asteroid *temp_ast;
+	Asteroid *temp_ast;
+	Entity *temp_en;
 	CollideEffect *temp_explode;
-	bullet *temp_bullet;
-
+	Bullet *temp_bullet;
+	Buff *temp_buff;
+	Debuff *temp_debuff;
+	TimeBomb *temp_bomb;
+	UFO *temp_ufo;
 	//
 
 
 	sf::Sprite startButton;
+	sf::Sprite startButton_pressed;
 	sf::Sprite textInput;
-	player *p;
-	sf::Text gameOverTxt;
+	Ship *p;
+	sf::Text tempOutTxt;
+	std::string tempOutString;
 	sf::SoundBuffer backSoundBuffer;
 	sf::Font fontnya;
 	sf::Text score_text;
@@ -69,24 +79,25 @@ private:
 	/////////////
 	int skor;
 	int next_lvl_score;
-	const double next_lvl_factor = 1.25;
+	const double next_lvl_factor = 1.2;
 	/////////////////
 	int asteroid_factor;
-	int hpBoost_factor;
-	int sMode_factor;
+	int debuffer_factor;
+	int buff_factor;
 	int timeBomb_factor;
+	int ufo_factor;
+
 	std::string player_name;
 	bool spaceKeyPressed;
-	std::chrono::high_resolution_clock::time_point before_t,current_t;
-	double compute_angle(double x1,double y1,double x2,double y2);
+	std::chrono::high_resolution_clock::time_point current_t;
 	void reset_game();
 	void increase_level();
-	bool isAlive();
 public:
 	Game();
 	void run_game();
 	FILE *skordb;
 	void play();
+	void fight(int &a,int &b);
 	bool isCollide(Entity *a, Entity *b);
 	bool isCollide(double x1,double y1,double R1,double x2,double y2,double R2);
 	~Game();

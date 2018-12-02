@@ -11,6 +11,15 @@ Entity::Entity()
 		first_call = false;
 		setType(EnType::ENTITY);
 	}
+	autoRotation = false;
+	rotateAngle = 0;
+	rotateSpeed = 0;
+}
+
+void Entity::setAutoRotation(float rotateSpeed) {
+	this->rotateSpeed = rotateSpeed;
+	autoRotation = true;
+
 }
 
 void Entity::colliding(Entity &enObj) {
@@ -20,6 +29,7 @@ void Entity::colliding(Entity &enObj) {
 }
 
 void Entity::setHp(int hp) { this->hp = hp; }
+int Entity::getHp() { return this->hp; }
 void Entity::settings(Animation &a, int X, int Y, float Angle, int radius)
 {
 	anim = a;
@@ -53,7 +63,12 @@ sf::Vector2f Entity::get_possition() {
 void Entity::draw(sf::RenderWindow &app)
 {
 	anim.sprite.setPosition(x, y);
-	anim.sprite.setRotation(angle + 90);
+	if (autoRotation) {
+		anim.sprite.setRotation(angle + rotateAngle);
+		rotateAngle += rotateSpeed;
+		if (rotateAngle > 360)rotateAngle -= 360;
+	}
+	else { anim.sprite.setRotation(angle + 90); }
 	app.draw(anim.sprite);
 	
 }
